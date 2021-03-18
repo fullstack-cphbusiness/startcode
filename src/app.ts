@@ -9,6 +9,9 @@ import { Request, Response } from "express"
 
 const app = express()
 
+app.use(express.json())
+
+//SIMPLE LOGGER
 //Please verify whether this works (requires app in your DEBUG variable, like DEBUG=www,app)
 //If not replace with a console.log statement, or better the "advanced logger" refered to in the exercises
 app.use((req, res, next) => {
