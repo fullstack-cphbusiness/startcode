@@ -5,7 +5,7 @@ dotenv.config()
 import { ApiError } from "./errors/errors"
 import friendsRoutes from "./routes/friendRoutes";
 const debug = require("debug")("app")
-import { Request, Response } from "express"
+import { Request, Response, NextFunction } from "express"
 
 const app = express()
 
@@ -32,7 +32,7 @@ app.use("/api", (req: any, res: any, next) => {
 })
 
 //Makes JSON error-response for ApiErrors, otherwise pass on to default error handleer
-app.use((err: any, req: Request, res: Response, next: Function) => {
+app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   if (err instanceof (ApiError)) {
     res.status(err.errorCode).json({ errorCode: 404, msg: err.message })
   } else {
