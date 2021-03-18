@@ -9,7 +9,7 @@ import { Request, Response } from "express"
 
 const app = express()
 
-//Please verify whether this works (requires app in your DEBUG variable, like DEBUG=www,appp)
+//Please verify whether this works (requires app in your DEBUG variable, like DEBUG=www,app)
 //If not replace with a console.log statement, or better the "advanced logger" refered to in the exercises
 app.use((req, res, next) => {
   debug(new Date().toLocaleDateString(), req.method, req.originalUrl, req.ip)
