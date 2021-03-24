@@ -7,7 +7,7 @@ And add the following
 PORT=5555
 
 #DB connection details will go here
-CONNECTION
+CONNECTION=
 
 DB_NAME=semester_case
 
