@@ -20,9 +20,8 @@ router.use(async (req, res, next) => {
 router.post('/', async function (req, res, next) {
   try {
     let newFriend = req.body;
-    //#####################################
-    throw new Error("COMPLETE THIS METHOD")
-    //#####################################
+    const status = await facade.addFriend(newFriend)
+    res.json({ status })
   } catch (err) {
     debug(err)
     if (err instanceof ApiError) {
@@ -33,8 +32,18 @@ router.post('/', async function (req, res, next) {
   }
 })
 
+// ALL ENDPOINTS BELOW REQUIRES AUTHENTICATION
+
+import authMiddleware from "../middleware/basic-auth"
+const USE_AUTHENTICATION = !process.env["SKIP_AUTHENTICATION"];
+
+if (USE_AUTHENTICATION) {
+  router.use(authMiddleware);
+}
+
 router.get("/all", async (req: any, res) => {
   const friends = await facade.getAllFriends();
+
   const friendsDTO = friends.map(friend => {
     const { firstName, lastName, email } = friend
     return { firstName, lastName, email }
@@ -42,15 +51,18 @@ router.get("/all", async (req: any, res) => {
   res.json(friendsDTO);
 })
 
-router.put('/:email', async function (req: any, res, next) {
-
+/**
+ * authenticated users can edit himself
+ */
+router.put('/editme', async function (req: any, res, next) {
   try {
+    if (!USE_AUTHENTICATION) {
+      throw new ApiError("This endpoint requires authentication", 500)
+    }
     const email = null //GET THE USERS EMAIL FROM SOMEWHERE (req.params OR req.credentials.userName)
-    let newFriend = req.body;
     //#####################################
     throw new Error("COMPLETE THIS METHOD")
     //#####################################
-
   } catch (err) {
     debug(err)
     if (err instanceof ApiError) {
@@ -60,13 +72,57 @@ router.put('/:email', async function (req: any, res, next) {
   }
 })
 
-router.get("/find-user/:email", async (req: any, res, next) => {
-
-  const userId = req.params.userid;
+router.get("/me", async (req: any, res, next) => {
   try {
+    if (!USE_AUTHENTICATION) {
+      throw new ApiError("This endpoint requires authentication", 500)
+    }
+    const email = null //GET THE USERS EMAIL FROM SOMEWHERE (req.params OR req.credentials.userName)
     //#####################################
     throw new Error("COMPLETE THIS METHOD")
     //#####################################
+
+  } catch (err) {
+    next(err)
+  }
+})
+
+//These endpoint requires admin rights
+
+//An admin user can fetch everyone
+router.get("/find-user/:email", async (req: any, res, next) => {
+
+  if (USE_AUTHENTICATION && !req.credentials.role && req.credentials.role !== "admin") {
+    throw new ApiError("Not Authorized", 401)
+  }
+  const userId = req.params.userid;
+  try {
+    const friend = await facade.getFrind(userId);
+    if (friend == null) {
+      throw new ApiError("user not found", 404)
+    }
+    const { firstName, lastName, email, role } = friend;
+    const friendDTO = { firstName, lastName, email }
+    res.json(friendDTO);
+  } catch (err) {
+    next(err)
+  }
+})
+
+
+//An admin user can edit everyone
+router.put('/:email', async function (req: any, res, next) {
+
+  try {
+    if (USE_AUTHENTICATION && !req.credentials.role && req.credentials.role !== "admin") {
+      throw new ApiError("Not Authorized", 401)
+    }
+    const email = null //GET THE USERS EMAIL FROM SOMEWHERE (req.params OR req.credentials.userName)
+    let newFriend = req.body;
+    //#####################################
+    throw new Error("COMPLETE THIS METHOD")
+    //#####################################
+
   } catch (err) {
     debug(err)
     if (err instanceof ApiError) {
