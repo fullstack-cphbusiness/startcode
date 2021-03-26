@@ -95,7 +95,7 @@ class FriendsFacade {
    */
   async getVerifiedUser(friendEmail: string, password: string): Promise<IFriend | null> {
     const friend: IFriend = await this.friendCollection.findOne({ email: friendEmail })
-    if (friend && bcrypt.compare(password, friend.password)) {
+    if (friend && await bcrypt.compare(password, friend.password)) {
       return friend
     }
     return Promise.resolve(null)
