@@ -95,7 +95,7 @@ router.get("/find-user/:email", async (req: any, res, next) => {
   if (USE_AUTHENTICATION && !req.credentials.role && req.credentials.role !== "admin") {
     throw new ApiError("Not Authorized", 401)
   }
-  const userId = req.params.userid;
+  const userId = req.params.email;
   try {
     const friend = await facade.getFrind(userId);
     if (friend == null) {
