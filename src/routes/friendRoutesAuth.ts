@@ -114,7 +114,7 @@ router.get("/find-user/:email", async (req: any, res, next) => {
 router.put('/:email', async function (req: any, res, next) {
 
   try {
-    if (USE_AUTHENTICATION && !req.credentials.role && req.credentials.role !== "admin") {
+    if (USE_AUTHENTICATION && !req.credentials.role || req.credentials.role !== "admin") {
       throw new ApiError("Not Authorized", 401)
     }
     const email = null //GET THE USERS EMAIL FROM SOMEWHERE (req.params OR req.credentials.userName)
