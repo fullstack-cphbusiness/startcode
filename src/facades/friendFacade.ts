@@ -27,7 +27,7 @@ class FriendsFacade {
    * @param friend 
    * @throws ApiError if validation fails
    */
-  async addFriend(friend: IFriend): Promise<{ id: String }> {
+  async addFriend(friend: IFriend): Promise<{ id: string }> {
     const status = USER_INPUT_SCHEMA.validate(friend);
     if (status.error) {
       throw new ApiError(status.error.message, 400)
