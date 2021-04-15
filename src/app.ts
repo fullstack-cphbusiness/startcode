@@ -41,6 +41,14 @@ app.get("/demo", (req, res) => {
   res.send("Server is up");
 })
 
+import { graphqlHTTP } from 'express-graphql';
+import { schema } from './graphql/schema';
+
+app.use('/graphql', graphqlHTTP({
+  schema: schema,
+  graphiql: true,
+}));
+
 //Our own default 404-handler for api-requests
 app.use("/api", (req: any, res: any, next) => {
   res.status(404).json({ errorCode: 404, msg: "not found" })
