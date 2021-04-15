@@ -1,5 +1,5 @@
 import { IFriend } from '../interfaces/IFriend';
-import { Db, Collection,ObjectID } from "mongodb";
+import { Db, Collection, ObjectID } from "mongodb";
 import bcrypt from "bcryptjs";
 import { ApiError } from '../errors/errors';
 import Joi, { ValidationError } from "joi"
@@ -58,7 +58,7 @@ class FriendsFacade {
 
     const fieldsToUpdate: any = {}
     f.firstName && (fieldsToUpdate.firstName = f.firstName)
-    f.firstName && (fieldsToUpdate.firstName = f.firstName)
+    f.lastName && (fieldsToUpdate.lastName = f.lastName)
     f.password && (fieldsToUpdate.password = f.password)
 
     const result = await this.friendCollection.findOneAndUpdate(

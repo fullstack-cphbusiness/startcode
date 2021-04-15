@@ -38,7 +38,7 @@ export const resolvers = {
 
       let options: any = { method: "GET" }
 
-      //This part only required if authentication is
+      //This part only required if authentication is required
       const auth = context.get("authorization");
       if (auth) {
         options.headers = { 'authorization': auth }
