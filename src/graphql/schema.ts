@@ -2,6 +2,7 @@ import { makeExecutableSchema } from 'graphql-tools';
 import { resolvers } from './resolvers';
 
 const typeDefs = `
+
     type Friend {
         id: ID
         firstName: String
@@ -20,6 +21,9 @@ const typeDefs = `
         """
         getAllFriends : [Friend]!
 
+        """
+        Only required if you ALSO wan't to try a version where the result is fetched from the existing endpoint
+        """
         getAllFriendsProxy: [Friend]!
         
     }
@@ -30,6 +34,7 @@ const typeDefs = `
         password: String!
         email: String!
     }
+
     input FriendEditInput {
         firstName: String
         lastName: String
