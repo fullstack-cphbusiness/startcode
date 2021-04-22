@@ -35,14 +35,38 @@ app.use((req, res, next) => {
 
 app.use(express.static(path.join(process.cwd(), "public")))
 
+
+import cors from "cors"
+app.use(cors())
+
 app.use("/api/friends", friendsRoutes)
 
 app.get("/demo", (req, res) => {
   res.send("Server is up");
 })
 
+
 import { graphqlHTTP } from 'express-graphql';
 import { schema } from './graphql/schema';
+
+import authMiddleware from "./middleware/basic-auth"
+
+app.use("/graphql", (req, res, next) => {
+  const body = req.body;
+  if (body && body.query && body.query.includes("createFriend")) {
+    console.log("Create")
+    return next();
+  }
+  if (body && body.operationName && body.query.includes("IntrospectionQuery")) {
+    console.log("IntrospectionQuery")
+    return next();
+  }
+  if (body.query && (body.mutation || body.query)) {
+    console.log("something else")
+    return authMiddleware(req, res, next)
+  }
+  next()
+})
 
 app.use('/graphql', graphqlHTTP({
   schema: schema,
@@ -57,7 +81,7 @@ app.use("/api", (req: any, res: any, next) => {
 //Makes JSON error-response for ApiErrors, otherwise pass on to default error handleer
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   if (err instanceof (ApiError)) {
-     res.status(err.errorCode).json({ errorCode: err.errorCode, msg: err.message })
+    res.status(err.errorCode).json({ errorCode: err.errorCode, msg: err.message })
   } else {
     next(err)
   }
