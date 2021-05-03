@@ -18,19 +18,24 @@ let facade: FriendFacade;
 describe("## Verify the Friends Facade ##", () => {
 
   before(async function () {
-    //Connect to inmemory test database
-    //Get the database and initialize the facade
-    //Initialize friendCollection, to operate on the database without the facade
+    const client = await InMemoryDbConnector.connect();
+    const db = client.db();
+    friendCollection = db.collection("friends");
+    facade = new FriendFacade(db)
   })
+
 
   beforeEach(async () => {
     const hashedPW = await bcryptjs.hash("secret", 4)
     await friendCollection.deleteMany({})
-    //Create a few few testusers for ALL the tests
+    await friendCollection.insertMany([
+      { firstName: "Peter", lastName: "Pan", email: "pp@b.dk", password: hashedPW, role: "user" },
+      { firstName: "Donald", lastName: "Duck", email: "dd@b.dk", password: hashedPW, role: "user" },
+    ])
   })
 
   describe("Verify the addFriend method", () => {
-    it("It should Add the user Jan", async () => {
+    xit("It should Add the user Jan", async () => {
       const newFriend = { firstName: "Jan", lastName: "Olsen", email: "jan@b.dk", password: "secret" }
       const status = await facade.addFriend(newFriend);
       expect(status).to.be.not.null

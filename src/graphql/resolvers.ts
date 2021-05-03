@@ -29,23 +29,8 @@ export const resolvers = {
       if (!context.credentials || !context.credentials.role || context.credentials.role !== "admin") {
         throw new ApiError("Not Authorized", 401)
       }
-
       return friendFacade.getAllFriendsV2()
-
     },
-
-    // getAllFriendsProxy: async (root: object, _: any, context: Request) => {
-    //   let options: any = { method: "GET" }
-    //   //This part only required if authentication is required
-    //   const auth = context.get("authorization");
-    //   if (auth) {
-    //     options.headers = { 'authorization': auth }
-    //   }
-    //   return fetch(`http://localhost:${process.env.PORT}/api/friends/all`, options).then(r => {
-    //     if (r.status >= 400) { throw new Error(r.statusText) }
-    //     return r.json()
-    //   })
-    // }
   },
   Mutation: {
     createFriend: async (_: object, { input }: { input: IFriend }) => {
